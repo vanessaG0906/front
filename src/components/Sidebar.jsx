@@ -1,6 +1,6 @@
-import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaHotel, FaBed, FaChair, FaUserTie, FaUser, FaUsers } from "react-icons/fa";
+import "./Sidebar.css";
 
 const menu = [
   { label: "Hoteles", route: "hoteles", icon: <FaHotel /> },
@@ -11,12 +11,12 @@ const menu = [
   { label: "Usuarios", route: "usuarios", icon: <FaUsers /> },
 ];
 
-export default function SidebarRight() {
+export default function Sidebar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   return (
-    <aside className="sidebar-right">
+    <aside className="sidebar">
       <div className="sidebar-logo">
         <span role="img" aria-label="hotel" style={{ fontSize: "1.7rem" }}>🏨</span>
         <span className="sidebar-title">Menú</span>
