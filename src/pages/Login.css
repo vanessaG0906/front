@@ -1,6 +1,6 @@
 html, body, #root {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -8,8 +8,8 @@ html, body, #root {
 }
 
 .login-bg {
+  min-height: 100vh;
   width: 100vw;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,11 +17,25 @@ html, body, #root {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden;
+}
+    
+.login-bg {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .login-form {
   background: white;
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  padding: 2.5rem 2rem 2rem 2rem;
   border-radius: 20px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.07);
   min-width: 320px;
