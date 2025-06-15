@@ -1,9 +1,8 @@
-import './Login.css';
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import './Login.css';
 
-const API_URL = "/api/login"; // Cambia por la URL completa si es necesario
+const API_URL = "http://localhost:8000/api/login"; // Cambia por la URL completa si no usas proxy
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -20,14 +19,9 @@ const Login = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
-          "X-Requested-With": "XMLHttpRequest"
+          "Accept": "application/json"
         },
-        credentials: "include", // Necesario para cookies/sesiones con Laravel Sanctum
-        body: JSON.stringify({
-          email,
-          password
-        })
+        body: JSON.stringify({ email, password })
       });
 
       if (!response.ok) {
@@ -41,10 +35,16 @@ const Login = () => {
         return;
       }
 
-      // Si login OK, redirige
-      navigate("/dashboard");
+      // Espera que el backend devuelva { token: "..." }
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem("token", data.token); // Guarda el token
+        navigate("/dashboard"); // Cambia la ruta si tu dashboard es distinto
+      } else {
+        setError("No se recibió token del servidor");
+      }
     } catch (err) {
-      setError("Error de red o servidor (¿está corriendo el backend?)");
+      setError("Error de red o servidor");
     }
   };
 
