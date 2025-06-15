@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './Login.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -17,7 +18,6 @@ export default function Login() {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        // Redirige al dashboard o a donde quieras
         window.location.href = '/dashboard';
       } else {
         setError(data.error || 'Credenciales inválidas');
@@ -28,18 +28,30 @@ export default function Login() {
   };
 
   return (
-    <div style={{maxWidth: 400, margin: 'auto', marginTop: 100}}>
-      <h2>Iniciar sesión</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label><br />
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+    <div className="login-bg">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2>Iniciar Sesión</h2>
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            placeholder="ejemplo@correo.com"
+          />
         </div>
-        <div>
-          <label>Contraseña:</label><br />
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+        <div className="form-group">
+          <label>Contraseña</label>
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            placeholder="••••••••"
+          />
         </div>
-        {error && <div style={{color: 'red'}}>{error}</div>}
+        {error && <div className="login-error">{error}</div>}
         <button type="submit">Entrar</button>
       </form>
     </div>
