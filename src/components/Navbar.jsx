@@ -1,14 +1,19 @@
-import { Link } from 'react-router-dom';
-import './Navbar.css';
+import React from "react";
+import { FaUserCircle } from "react-icons/fa";
+import './Navbar.css'
 
 export default function Navbar() {
   return (
-    <nav className="navbar">
-      <div className="navbar-logo">🏨 Gestion del Hotel</div>
-      <div className="navbar-links">
-        <Link to="/login">Login</Link>
-        {/* Agrega más enlaces si lo necesitas */}
+    <header className="navbar">
+      <div className="navbar-logo">
+        <span role="img" aria-label="hotel" style={{ fontSize: "2rem" }}>🏨</span>
+        <span className="navbar-title">Hotel Dashboard</span>
       </div>
-    </nav>
+      <div className="navbar-user">
+        <FaUserCircle size={28} />
+        <span className="navbar-username">admin</span>
+        <button className="navbar-logout">Cerrar sesión</button>
+      </div>
+    </header>
   );
 }

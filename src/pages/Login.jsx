@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import './Login.css';
-
 const API_URL = "http://localhost:8000/api/login"; // Cambia por la URL completa si no usas proxy
 
 const Login = () => {
@@ -49,6 +49,7 @@ const Login = () => {
   };
 
   return (
+    <><Navbar />
     <div className="login-bg">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Iniciar sesión</h2>
@@ -75,6 +76,7 @@ const Login = () => {
         <button type="submit">Entrar</button>
       </form>
     </div>
+    </>
   );
 };
 
