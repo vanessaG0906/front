@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import './Login.css';
-const API_URL = "http://localhost:8000/api/login"; // Cambia por la URL completa si no usas proxy
+const API_URL = "http://localhost:8000/api/login";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [modalMessage, setModalMessage] = useState(""); // mensaje para el popup
+  const [showModal, setShowModal] = useState(false); // controla si se ve el popup
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setModalMessage("");
+    setShowModal(false);
 
     try {
       const response = await fetch(API_URL, {
@@ -31,51 +33,77 @@ const Login = () => {
         } catch {
           data = { message: "Error de servidor" };
         }
-        setError(data.message || "Error de autenticación");
+        setModalMessage(data.message || "Error de autenticación");
+        setShowModal(true);
         return;
       }
 
-      // Espera que el backend devuelva { token: "..." }
       const data = await response.json();
       if (data.token) {
-        localStorage.setItem("token", data.token); // Guarda el token
-        navigate("/dashboard"); // Cambia la ruta si tu dashboard es distinto
+        localStorage.setItem("token", data.token);
+        setModalMessage("¡Login exitoso! Redirigiendo...");
+        setShowModal(true);
+
+        setTimeout(() => {
+          setShowModal(false);
+          navigate("/dashboard");
+        }, 2000);
       } else {
-        setError("No se recibió token del servidor");
+        setModalMessage("No se recibió token del servidor");
+        setShowModal(true);
       }
     } catch (err) {
-      setError("Error de red o servidor");
+      setModalMessage("Error de red o servidor");
+      setShowModal(true);
     }
   };
 
   return (
-    <><Navbar />
-    <div className="login-bg">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Iniciar sesión</h2>
-        {error && <div className="login-error">{error}</div>}
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="ejemplo@correo.com"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Contraseña:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Entrar</button>
-      </form>
+    <>
+      <div className="login-bg">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <h2>Iniciar sesión</h2>
+          <div className="form-group">
+            <label>Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="ejemplo@correo.com"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Contraseña:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit">Entrar</button>
+        </form>
+      </div>
+
+      {showModal && (
+  <div className="modal-overlay">
+    <div className="modal-content animate-fade-in">
+      {modalMessage.toLowerCase().includes("exitoso") 
+      ? 
+      (
+      <div className="modal-icon success">✔️</div>
+      ) 
+      : 
+      (
+        <div className="modal-icon error">❌</div>
+      )
+      }
+      <p>{modalMessage}</p>
+      <button onClick={() => setShowModal(false)}>Ok, entendido</button>
     </div>
+  </div>
+)}
     </>
   );
 };

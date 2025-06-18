@@ -1,18 +1,27 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import './Navbar.css'
+import './Navbar.css';
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+  localStorage.removeItem("token");
+  navigate("/login", { replace: true });
+};
+
+
   return (
     <header className="navbar">
       <div className="navbar-logo">
-        <span role="img" aria-label="hotel" style={{ fontSize: "2rem" }}>🏨</span>
-        <span className="navbar-title">Hotel Dashboard</span>
+        <span className="navbar-title">Administración</span>
       </div>
       <div className="navbar-user">
-        <FaUserCircle size={28} />
-        <span className="navbar-username">admin</span>
-        <button className="navbar-logout">Cerrar sesión</button>
+        <FaUserCircle size={40} />
+        <button className="navbar-logout" onClick={handleLogout}>
+          Cerrar sesión
+        </button>
       </div>
     </header>
   );

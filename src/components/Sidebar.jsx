@@ -1,37 +1,36 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import { FaHotel, FaBed, FaChair, FaUserTie, FaUser, FaUsers } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+import {
+  FaHotel,
+  FaBed,
+  FaUsers,
+  FaUserTie,
+  FaChair,
+  FaUserShield
+} from "react-icons/fa";
 import "./Sidebar.css";
 
-const menu = [
-  { label: "Hoteles", route: "hoteles", icon: <FaHotel /> },
-  { label: "Habitaciones", route: "habitaciones", icon: <FaBed /> },
-  { label: "Salones", route: "salones", icon: <FaChair /> },
-  { label: "Roles", route: "roles", icon: <FaUserTie /> },
-  { label: "Empleados", route: "empleados", icon: <FaUser /> },
-  { label: "Usuarios", route: "usuarios", icon: <FaUsers /> },
-];
-
 export default function Sidebar() {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-
   return (
     <aside className="sidebar">
-      <div className="sidebar-logo">
-        <span role="img" aria-label="hotel" style={{ fontSize: "1.7rem" }}>🏨</span>
-        <span className="sidebar-title">Menú</span>
-      </div>
       <nav className="sidebar-nav">
-        {menu.map((item) => (
-          <button
-            className={`sidebar-btn${pathname.includes(item.route) ? " active" : ""}`}
-            key={item.route}
-            onClick={() => navigate(`/dashboard/${item.route}`)}
-          >
-            <span className="sidebar-icon">{item.icon}</span>
-            <span className="sidebar-label">{item.label}</span>
-          </button>
-        ))}
+        <NavLink to="/dashboard/hoteles" className="sidebar-btn">
+          <FaHotel /> <span>Hoteles</span>
+        </NavLink>
+        <NavLink to="/dashboard/habitaciones" className="sidebar-btn">
+          <FaBed /> <span>Habitaciones</span>
+        </NavLink>
+        <NavLink to="/dashboard/salones" className="sidebar-btn">
+          <FaChair /> <span>Salones</span>
+        </NavLink>
+        <NavLink to="/dashboard/roles" className="sidebar-btn">
+          <FaUserShield /> <span>Roles</span>
+        </NavLink>
+        <NavLink to="/dashboard/empleados" className="sidebar-btn">
+          <FaUserTie /> <span>Empleados</span>
+        </NavLink>
+        <NavLink to="/dashboard/usuarios" className="sidebar-btn">
+          <FaUsers /> <span>Usuarios</span>
+        </NavLink>
       </nav>
     </aside>
   );

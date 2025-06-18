@@ -1,30 +1,25 @@
-import React from "react";
+import { useLocation } from "react-router-dom";
+
 export default function TablaHoteles() {
-  const hoteles = [
-    { id: 1, nombre: "Hotel Central", ciudad: "Quito" },
-    { id: 2, nombre: "Hotel del Lago", ciudad: "Guayaquil" },
-  ];
+  const location = useLocation();
+
+  const arrowPositions = {
+    "/dashboard/hoteles": "50px",
+    "/dashboard/habitaciones": "100px",
+    "/dashboard/salones": "150px",
+    "/dashboard/roles": "200px",
+    "/dashboard/empleados": "250px",
+    "/dashboard/usuarios": "300px",
+  };
+
+  const arrowTop = arrowPositions[location.pathname] || "50px";
+
   return (
-    <section className="dashboard-section">
-      <h2>Hoteles</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Ciudad</th>
-          </tr>
-        </thead>
-        <tbody>
-          {hoteles.map(h => (
-            <tr key={h.id}>
-              <td>{h.id}</td>
-              <td>{h.nombre}</td>
-              <td>{h.ciudad}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
+    <div className="centered-card">
+      <div className="arrow-box" style={{ "--arrow-top": arrowTop }}>
+        <h2>Hoteles</h2>
+        <p>Contenido de hoteles.</p>
+      </div>
+    </div>
   );
 }
