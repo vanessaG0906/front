@@ -5,7 +5,8 @@ import {
   FaUsers,
   FaUserTie,
   FaChair,
-  FaUserShield
+  FaUserShield,
+  FaLaptop
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -13,6 +14,9 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <nav className="sidebar-nav">
+        <NavLink to="/dashboard/index" className="sidebar-btn">
+          <FaLaptop /> <span>Inicio</span>
+        </NavLink>
         <NavLink to="/dashboard/hoteles" className="sidebar-btn">
           <FaHotel /> <span>Hoteles</span>
         </NavLink>

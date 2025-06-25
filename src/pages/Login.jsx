@@ -7,8 +7,8 @@ const API_URL = "http://localhost:8000/api/login";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [modalMessage, setModalMessage] = useState(""); // mensaje para el popup
-  const [showModal, setShowModal] = useState(false); // controla si se ve el popup
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false); 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {

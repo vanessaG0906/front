@@ -1,29 +1,20 @@
-import React from "react";
-export default function TablaRoles() {
-  const roles = [
-    { id: 1, nombre: "Administrador" },
-    { id: 2, nombre: "Recepcionista" },
-    { id: 3, nombre: "Gerente" },
-  ];
-  return (
-    <section className="dashboard-section">
-      <h2>Roles</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-          </tr>
-        </thead>
-        <tbody>
-          {roles.map(r => (
-            <tr key={r.id}>
-              <td>{r.id}</td>
-              <td>{r.nombre}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
+import "./Sidebar.css";
+
+export default function TablaHoteles() {
+
+ return (
+    <div className="hotel-panel">
+      <div className="panel-arrow">
+        <i className="arrow-icon"></i>
+      </div>
+      <div className="panel-content">
+        <h2>Roles</h2>
+        <p>Contenido de Roles.</p>
+        <div className="data-source">
+          {/* Aquí puedes mostrar información sobre la fuente de datos */}
+          <p>Datos obtenidos de: /api/rols</p>
+        </div>
+      </div>
+    </div>
   );
 }

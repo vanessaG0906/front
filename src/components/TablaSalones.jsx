@@ -1,30 +1,20 @@
-import React from "react";
-export default function TablaSalones() {
-  const salones = [
-    { id: 1, nombre: "Salón Azul", capacidad: 50 },
-    { id: 2, nombre: "Salón Oro", capacidad: 80 },
-  ];
-  return (
-    <section className="dashboard-section">
-      <h2>Salones</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Capacidad</th>
-          </tr>
-        </thead>
-        <tbody>
-          {salones.map(s => (
-            <tr key={s.id}>
-              <td>{s.id}</td>
-              <td>{s.nombre}</td>
-              <td>{s.capacidad}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
+import "./Sidebar.css";
+
+export default function TablaHoteles() {
+
+ return (
+    <div className="hotel-panel">
+      <div className="panel-arrow">
+        <i className="arrow-icon"></i>
+      </div>
+      <div className="panel-content">
+        <h2>Salones</h2>
+        <p>Contenido de Salones.</p>
+        <div className="data-source">
+          {/* Aquí puedes mostrar información sobre la fuente de datos */}
+          <p>Datos obtenidos de: /api/salones</p>
+        </div>
+      </div>
+    </div>
   );
 }

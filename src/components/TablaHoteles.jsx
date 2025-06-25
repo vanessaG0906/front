@@ -1,24 +1,19 @@
-import { useLocation } from "react-router-dom";
+import "./Sidebar.css";
 
 export default function TablaHoteles() {
-  const location = useLocation();
 
-  const arrowPositions = {
-    "/dashboard/hoteles": "50px",
-    "/dashboard/habitaciones": "100px",
-    "/dashboard/salones": "150px",
-    "/dashboard/roles": "200px",
-    "/dashboard/empleados": "250px",
-    "/dashboard/usuarios": "300px",
-  };
-
-  const arrowTop = arrowPositions[location.pathname] || "50px";
-
-  return (
-    <div className="centered-card">
-      <div className="arrow-box" style={{ "--arrow-top": arrowTop }}>
+ return (
+    <div className="hotel-panel">
+      <div className="panel-arrow">
+        <i className="arrow-icon"></i>
+      </div>
+      <div className="panel-content">
         <h2>Hoteles</h2>
-        <p>Contenido de hoteles.</p>
+        <p>Contenido de Hoteles.</p>
+        <div className="data-source">
+          {/* Aquí puedes mostrar información sobre la fuente de datos */}
+          <p>Datos obtenidos de: /api/hotelss</p>
+        </div>
       </div>
     </div>
   );

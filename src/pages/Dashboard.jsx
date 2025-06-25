@@ -7,6 +7,7 @@ import TablaSalones from "../components/TablaSalones";
 import TablaRoles from "../components/TablaRoles";
 import TablaEmpleados from "../components/TablaEmpleados";
 import TablaUsuarios from "../components/TablaUsuarios";
+import Index from "../components/Index";
 import "./Dashboard.css";
 
 export default function Dashboard() {
@@ -18,6 +19,7 @@ export default function Dashboard() {
         <main className="dashboard-content">
           <Routes>
             <Route path="/" element={<Navigate to="hoteles" />} />
+            <Route path="index" element={<Index />} />
             <Route path="hoteles" element={<TablaHoteles />} />
             <Route path="habitaciones" element={<TablaHabitaciones />} />
             <Route path="salones" element={<TablaSalones />} />

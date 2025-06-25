@@ -1,31 +1,20 @@
-import React from "react";
-export default function TablaEmpleados() {
-  const empleados = [
-    { id: 1, nombre: "Juan Pérez", rol: "Administrador" },
-    { id: 2, nombre: "Ana Torres", rol: "Recepcionista" },
-    { id: 3, nombre: "Carlos Núñez", rol: "Gerente" },
-  ];
-  return (
-    <section className="dashboard-section">
-      <h2>Empleados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Rol</th>
-          </tr>
-        </thead>
-        <tbody>
-          {empleados.map(e => (
-            <tr key={e.id}>
-              <td>{e.id}</td>
-              <td>{e.nombre}</td>
-              <td>{e.rol}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
+import "./Sidebar.css";
+
+export default function TablaHoteles() {
+
+ return (
+    <div className="hotel-panel">
+      <div className="panel-arrow">
+        <i className="arrow-icon"></i>
+      </div>
+      <div className="panel-content">
+        <h2>Empleados</h2>
+        <p>Contenido de Empleados.</p>
+        <div className="data-source">
+          {/* Aquí puedes mostrar información sobre la fuente de datos */}
+          <p>Datos obtenidos de: /api/empleado</p>
+        </div>
+      </div>
+    </div>
   );
 }
