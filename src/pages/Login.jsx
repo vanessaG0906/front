@@ -5,7 +5,7 @@ import './Login.css';
 const API_URL = "http://localhost:8000/api/login";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [correo, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [modalMessage, setModalMessage] = useState("");
   const [showModal, setShowModal] = useState(false); 
@@ -23,7 +23,7 @@ const Login = () => {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ correo, password })
       });
 
       if (!response.ok) {
@@ -67,7 +67,7 @@ const Login = () => {
             <label>Email:</label>
             <input
               type="email"
-              value={email}
+              value={correo}
               onChange={e => setEmail(e.target.value)}
               placeholder="ejemplo@correo.com"
               required

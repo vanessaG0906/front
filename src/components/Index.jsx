@@ -2,11 +2,7 @@ import "./Sidebar.css";
 const API_HOTELES = "http://localhost:8000/api/hotels";
 const API_ROLES = "http://localhost:8000/api/hotels";
 const API_HABITACIONES = "http://localhost:8000/api/hotels";
-const API_ROLES = "http://localhost:8000/api/hotels";
-const API_HOTELES = "http://localhost:8000/api/hotels";
-const API_ROLES = "http://localhost:8000/api/hotels";
-const API_HOTELES = "http://localhost:8000/api/hotels";
-const API_ROLES = "http://localhost:8000/api/hotels";
+
 
 export default function Index() {
 

@@ -20,8 +20,8 @@ export default function Sidebar() {
         <NavLink to="/dashboard/hoteles" className="sidebar-btn">
           <FaHotel /> <span>Hoteles</span>
         </NavLink>
-        <NavLink to="/dashboard/habitaciones" className="sidebar-btn">
-          <FaBed /> <span>Habitaciones</span>
+       <NavLink to="/dashboard/habitaciones" className="sidebar-btn">
+          <FaBed /> <span>Habitaciones</span> 
         </NavLink>
         <NavLink to="/dashboard/salones" className="sidebar-btn">
           <FaChair /> <span>Salones</span>
