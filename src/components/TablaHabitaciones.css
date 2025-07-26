@@ -95,3 +95,23 @@
 .toggle-form-button:active {
   transform: scale(0.98);
 }
+.btn-editar {
+  margin-left: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-eliminar {
+  margin-left: 5px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+

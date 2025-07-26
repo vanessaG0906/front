@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Sidebar.css";
 import "./TablaHabitaciones.css";
+const API_BASE_URL = "http://localhost:8000";
 
 export default function TablaHabitaciones() {
   const [showForm, setShowForm] = useState(false);
@@ -9,16 +10,16 @@ export default function TablaHabitaciones() {
   const [estado, setEstado] = useState("");
   const [precioNoche, setPrecioNoche] = useState("");
   const [mensaje, setMensaje] = useState("");
-  const [habitaciones, setHabitaciones] = useState([]); // aquí guardamos las habitaciones creadas
+  const [habitaciones, setHabitaciones] = useState([]);
+  const [idEditando, setIdEditando] = useState(null);
 
-  // useEffect para cargar habitaciones al montar el componente
   useEffect(() => {
     fetchHabitaciones();
   }, []);
 
   const fetchHabitaciones = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/habitaciones");
+      const response = await fetch(`${API_BASE_URL}/api/habitaciones`);
       if (response.ok) {
         const data = await response.json();
         setHabitaciones(data);
@@ -34,38 +35,102 @@ export default function TablaHabitaciones() {
     e.preventDefault();
     setMensaje("");
 
+    const precio = Number(precioNoche);
+
+    if (idEditando !== null) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/habitaciones/${idEditando}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify({
+            numero,
+            tipo,
+            estado,
+            precio_noche: precio,
+          }),
+        });
+
+        if (response.ok) {
+          const habitacionActualizada = await response.json();
+          setHabitaciones(habitaciones.map((h) =>
+            h.id === idEditando ? habitacionActualizada : h
+          ));
+          setMensaje("¡Habitación actualizada con éxito!");
+          limpiarFormulario();
+        } else {
+          const data = await response.json();
+          setMensaje(data.message || "Error al actualizar la habitación");
+        }
+      } catch (error) {
+        setMensaje("Error de red o servidor");
+      }
+    } else {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/habitaciones`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify({
+            numero,
+            tipo,
+            estado,
+            precio_noche: precio,
+          }),
+        });
+
+        if (response.ok) {
+          const nuevaHabitacion = await response.json();
+          setHabitaciones([...habitaciones, nuevaHabitacion]);
+          setMensaje("¡Habitación creada con éxito!");
+          limpiarFormulario();
+        } else {
+          const data = await response.json();
+          setMensaje(data.message || "Error al crear la habitación");
+        }
+      } catch (error) {
+        setMensaje("Error de red o servidor");
+      }
+    }
+  };
+
+  const handleEliminar = async (id) => {
     try {
-      const response = await fetch("http://localhost:8000/api/habitaciones", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({
-          numero,
-          tipo,
-          estado,
-          precio_noche: precioNoche,
-        }),
+      const response = await fetch(`${API_BASE_URL}/api/habitaciones/${id}`, {
+        method: "DELETE",
       });
 
       if (response.ok) {
-        const nuevaHabitacion = await response.json();
-
-        setHabitaciones([...habitaciones, nuevaHabitacion]); // actualiza listado en front
-        setMensaje("¡Habitación creada con éxito!");
-        setNumero("");
-        setTipo("");
-        setEstado("");
-        setPrecioNoche("");
-        setShowForm(false);
+        setHabitaciones(habitaciones.filter((h) => h.id !== id));
+        setMensaje("Habitación eliminada con éxito");
       } else {
-        const data = await response.json();
-        setMensaje(data.message || "Error al crear la habitación");
+        setMensaje("No se pudo eliminar la habitación");
       }
     } catch (error) {
       setMensaje("Error de red o servidor");
     }
+  };
+
+  const handleEditar = (habitacion) => {
+    setIdEditando(Number(habitacion.id));
+    setNumero(habitacion.numero);
+    setTipo(habitacion.tipo);
+    setEstado(habitacion.estado);
+    setPrecioNoche(habitacion.precio_noche);
+    setShowForm(true);
+  };
+
+  const limpiarFormulario = () => {
+    setIdEditando(null);
+    setNumero("");
+    setTipo("");
+    setEstado("");
+    setPrecioNoche("");
+    setShowForm(false);
   };
 
   return (
@@ -80,7 +145,12 @@ export default function TablaHabitaciones() {
           <p>Datos obtenidos de: /api/habitaciones</p>
         </div>
 
-        <button onClick={() => setShowForm(!showForm)} className="toggle-form-button">
+        <button
+          onClick={() => {
+            showForm ? limpiarFormulario() : setShowForm(true);
+          }}
+          className="toggle-form-button"
+        >
           {showForm ? "Cancelar" : "Crear Habitación"}
         </button>
 
@@ -122,7 +192,7 @@ export default function TablaHabitaciones() {
                 required
               />
             </div>
-            <button type="submit">Guardar</button>
+            <button type="submit">{idEditando !== null ? "Actualizar" : "Guardar"}</button>
           </form>
         )}
 
@@ -137,6 +207,12 @@ export default function TablaHabitaciones() {
               {habitaciones.map((habitacion) => (
                 <li key={habitacion.id}>
                   #{habitacion.numero} - {habitacion.tipo} - Estado: {habitacion.estado} - ${habitacion.precio_noche} por noche
+                  <button onClick={() => handleEditar(habitacion)} className="btn-editar">
+                    Editar
+                  </button>
+                  <button onClick={() => handleEliminar(habitacion.id)} className="btn-eliminar">
+                    Eliminar
+                  </button>
                 </li>
               ))}
             </ul>
