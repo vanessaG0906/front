@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Sidebar.css";
 import "./TablaHabitaciones.css";
+
 const API_BASE_URL = "http://localhost:8000";
 
 export default function TablaHabitaciones() {
@@ -11,20 +12,27 @@ export default function TablaHabitaciones() {
   const [precioNoche, setPrecioNoche] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [habitaciones, setHabitaciones] = useState([]);
-  const [idEditando, setIdEditando] = useState(null);
 
   useEffect(() => {
     fetchHabitaciones();
   }, []);
 
   const fetchHabitaciones = async () => {
+    const token = localStorage.getItem("token"); 
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/habitaciones`);
+      const response = await fetch(`${API_BASE_URL}/api/habitaciones`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json",
+        },
+      });
+
       if (response.ok) {
         const data = await response.json();
         setHabitaciones(data);
       } else {
-        setMensaje("Error al cargar habitaciones");
+        setMensaje("Error al cargar habitaciones (¿token inválido?)");
       }
     } catch (error) {
       setMensaje("Error de red o servidor");
@@ -35,102 +43,40 @@ export default function TablaHabitaciones() {
     e.preventDefault();
     setMensaje("");
 
-    const precio = Number(precioNoche);
+    const token = localStorage.getItem("token"); 
 
-    if (idEditando !== null) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/habitaciones/${idEditando}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          body: JSON.stringify({
-            numero,
-            tipo,
-            estado,
-            precio_noche: precio,
-          }),
-        });
-
-        if (response.ok) {
-          const habitacionActualizada = await response.json();
-          setHabitaciones(habitaciones.map((h) =>
-            h.id === idEditando ? habitacionActualizada : h
-          ));
-          setMensaje("¡Habitación actualizada con éxito!");
-          limpiarFormulario();
-        } else {
-          const data = await response.json();
-          setMensaje(data.message || "Error al actualizar la habitación");
-        }
-      } catch (error) {
-        setMensaje("Error de red o servidor");
-      }
-    } else {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/habitaciones`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          body: JSON.stringify({
-            numero,
-            tipo,
-            estado,
-            precio_noche: precio,
-          }),
-        });
-
-        if (response.ok) {
-          const nuevaHabitacion = await response.json();
-          setHabitaciones([...habitaciones, nuevaHabitacion]);
-          setMensaje("¡Habitación creada con éxito!");
-          limpiarFormulario();
-        } else {
-          const data = await response.json();
-          setMensaje(data.message || "Error al crear la habitación");
-        }
-      } catch (error) {
-        setMensaje("Error de red o servidor");
-      }
-    }
-  };
-
-  const handleEliminar = async (id) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/habitaciones/${id}`, {
-        method: "DELETE",
+      const response = await fetch(`${API_BASE_URL}/api/habitaciones`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          numero,
+          tipo,
+          estado,
+          precio_noche: precioNoche,
+        }),
       });
 
       if (response.ok) {
-        setHabitaciones(habitaciones.filter((h) => h.id !== id));
-        setMensaje("Habitación eliminada con éxito");
+        const nuevaHabitacion = await response.json();
+        setHabitaciones([...habitaciones, nuevaHabitacion]);
+        setMensaje("¡Habitación creada con éxito!");
+        setNumero("");
+        setTipo("");
+        setEstado("");
+        setPrecioNoche("");
+        setShowForm(false);
       } else {
-        setMensaje("No se pudo eliminar la habitación");
+        const data = await response.json();
+        setMensaje(data.message || "Error al crear la habitación");
       }
     } catch (error) {
       setMensaje("Error de red o servidor");
     }
-  };
-
-  const handleEditar = (habitacion) => {
-    setIdEditando(Number(habitacion.id));
-    setNumero(habitacion.numero);
-    setTipo(habitacion.tipo);
-    setEstado(habitacion.estado);
-    setPrecioNoche(habitacion.precio_noche);
-    setShowForm(true);
-  };
-
-  const limpiarFormulario = () => {
-    setIdEditando(null);
-    setNumero("");
-    setTipo("");
-    setEstado("");
-    setPrecioNoche("");
-    setShowForm(false);
   };
 
   return (
@@ -140,15 +86,12 @@ export default function TablaHabitaciones() {
       </div>
       <div className="panel-content">
         <h2>Habitaciones</h2>
-        <p>Contenido de Habitaciones.</p>
         <div className="data-source">
-          <p>Datos obtenidos de: /api/habitaciones</p>
+          
         </div>
 
         <button
-          onClick={() => {
-            showForm ? limpiarFormulario() : setShowForm(true);
-          }}
+          onClick={() => setShowForm(!showForm)}
           className="toggle-form-button"
         >
           {showForm ? "Cancelar" : "Crear Habitación"}
@@ -174,14 +117,18 @@ export default function TablaHabitaciones() {
                 required
               />
             </div>
-            <div>
-              <label>Estado:</label>
-              <input
-                type="text"
+               <div className="estado-container">
+                <label>Estado:</label>
+              <select
                 value={estado}
                 onChange={(e) => setEstado(e.target.value)}
                 required
-              />
+              >
+                
+                <option value="disponible">Disponible</option>
+                <option value="ocupada">Ocupada</option>
+                <option value="mantenimiento">Mantenimiento</option>
+              </select>
             </div>
             <div>
               <label>Precio por noche:</label>
@@ -192,7 +139,7 @@ export default function TablaHabitaciones() {
                 required
               />
             </div>
-            <button type="submit">{idEditando !== null ? "Actualizar" : "Guardar"}</button>
+            <button type="submit">Guardar</button>
           </form>
         )}
 
@@ -206,13 +153,8 @@ export default function TablaHabitaciones() {
             <ul>
               {habitaciones.map((habitacion) => (
                 <li key={habitacion.id}>
-                  #{habitacion.numero} - {habitacion.tipo} - Estado: {habitacion.estado} - ${habitacion.precio_noche} por noche
-                  <button onClick={() => handleEditar(habitacion)} className="btn-editar">
-                    Editar
-                  </button>
-                  <button onClick={() => handleEliminar(habitacion.id)} className="btn-eliminar">
-                    Eliminar
-                  </button>
+                  #{habitacion.numero} - {habitacion.tipo} - Estado:{" "}
+                  {habitacion.estado} - ${habitacion.precio_noche} por noche
                 </li>
               ))}
             </ul>

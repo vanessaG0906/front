@@ -7,8 +7,12 @@ import TablaSalones from "../components/TablaSalones";
 import TablaRoles from "../components/TablaRoles";
 import TablaEmpleados from "../components/TablaEmpleados";
 import TablaUsuarios from "../components/TablaUsuarios";
+import TablaReservas from "../components/TablaReservas";
 import Index from "../components/Index";
 import "./Dashboard.css";
+import CrearFactura from "../components/CrearFactura";
+import TablaMesa from "../components/TablaMesa";
+
 
 export default function Dashboard() {
   return (
@@ -26,6 +30,9 @@ export default function Dashboard() {
             <Route path="roles" element={<TablaRoles />} />
             <Route path="empleados" element={<TablaEmpleados />} />
             <Route path="usuarios" element={<TablaUsuarios />} />
+            <Route path="reservas" element={<TablaReservas />} />
+            <Route path="crear-factura/:reservaId" element={<CrearFactura />} /> {/* <-- AQUI */}
+            <Route path="mesas" element={<TablaMesa />} />
           </Routes>
         </main>
       </div>

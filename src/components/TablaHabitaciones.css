@@ -115,3 +115,136 @@
   cursor: pointer;
 }
 
+/* Contenedor opcional para separar y controlar layout */
+.estado-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+  max-width: 300px; /* ajusta según tu diseño */
+}
+
+/* Estilo para la etiqueta */
+.estado-container label {
+  font-weight: 600;
+  color: #250101;
+  margin-bottom: 6px;
+  font-size: 14px;
+  user-select: none;
+}
+
+/* Estilo para el select */
+.estado-container select {
+  padding: 10px 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Cambiar borde y sombra al enfocar */
+.estado-container select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
+}
+
+/* Opcional: cambiar cursor y color del option disabled */
+.estado-container select option[value=""] {
+  color: #888;
+  font-style: italic;
+}
+.hotel-panel {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.empleado-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.empleado-form label {
+  flex-basis: 100%;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.empleado-form input,
+.empleado-form select {
+  flex: 1 1 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.empleado-form button {
+  padding: 10px 16px;
+  margin-top: 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.empleado-form button:hover {
+  background-color: #0056b3;
+}
+
+.mensaje {
+  width: 100%;
+  margin-top: 12px;
+  font-weight: 600;
+  color: green;
+}
+
+.empleados-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.empleados-table th,
+.empleados-table td {
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.empleados-table th {
+  background-color: #f2f2f2;
+  font-weight: 700;
+}
+
+.empleados-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+.empleados-table button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.empleados-table button:hover {
+  background-color: #eee;
+}
+
+.empleados-table button:nth-child(2) {
+  color: red;
+}
