@@ -1,7 +1,6 @@
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { Routes, Route, Navigate } from "react-router-dom";
-import TablaHoteles from "../components/TablaHoteles";
 import TablaHabitaciones from "../components/TablaHabitaciones";
 import TablaSalones from "../components/TablaSalones";
 import TablaRoles from "../components/TablaRoles";
@@ -22,9 +21,8 @@ export default function Dashboard() {
         <Sidebar />
         <main className="dashboard-content">
           <Routes>
-            <Route path="/" element={<Navigate to="hoteles" />} />
+            <Route path="/" element={<Navigate to="index" />} />
             <Route path="index" element={<Index />} />
-            <Route path="hoteles" element={<TablaHoteles />} />
             <Route path="habitaciones" element={<TablaHabitaciones />} />
             <Route path="salones" element={<TablaSalones />} />
             <Route path="roles" element={<TablaRoles />} />

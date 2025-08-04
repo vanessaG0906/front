@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../context/AuthContext"; // Ajusta ruta según tu estructura
+import Swal from "sweetalert2";
 import "./TablaRoles.css";
 
 const API_BASE_URL = "http://localhost:8000/api";
@@ -7,15 +8,16 @@ const API_BASE_URL = "http://localhost:8000/api";
 export default function TablaRoles() {
   const { user } = useAuthContext();
 
-  // Cambia los nombres de los roles para que coincidan con los que tienes en user.rol
   if (!user || (user.rol !== "Administrador" && user.rol !== "Dueño")) {
-    return <p style={{ padding: 20, color: "red" }}>Acceso denegado. No tienes permisos para ver esta página.</p>;
+    return (
+      <p style={{ padding: 20, color: "red" }}>
+        Acceso denegado. No tienes permisos para ver esta página.
+      </p>
+    );
   }
 
   const [showForm, setShowForm] = useState(false);
   const [nombre, setNombre] = useState("");
-  const [mensaje, setMensaje] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);
 
@@ -27,7 +29,6 @@ export default function TablaRoles() {
 
   const fetchRoles = async () => {
     setLoading(true);
-    setError("");
     try {
       const response = await fetch(`${API_BASE_URL}/roles`, {
         headers: {
@@ -39,10 +40,10 @@ export default function TablaRoles() {
         const data = await response.json();
         setRoles(data);
       } else {
-        setError("Error al cargar roles");
+        Swal.fire("Error", "Error al cargar roles", "error");
       }
     } catch {
-      setError("Error de red o servidor");
+      Swal.fire("Error", "Error de red o servidor", "error");
     }
     setLoading(false);
   };
@@ -50,23 +51,17 @@ export default function TablaRoles() {
   const resetFormulario = () => {
     setNombre("");
     setShowForm(false);
-    setError("");
-    setMensaje("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMensaje("");
-    setError("");
 
+    // Validaciones
     if (!nombre.trim()) {
-      setError("El nombre del rol no puede estar vacío.");
-      return;
+      return Swal.fire("Atención", "El nombre del rol no puede estar vacío.", "warning");
     }
-
     if (roles.some((rol) => rol.nombre.toLowerCase() === nombre.trim().toLowerCase())) {
-      setError("Ya existe un rol con ese nombre.");
-      return;
+      return Swal.fire("Atención", "Ya existe un rol con ese nombre.", "warning");
     }
 
     try {
@@ -82,20 +77,27 @@ export default function TablaRoles() {
 
       if (response.ok) {
         const data = await response.json();
-        setMensaje("Rol creado con éxito!");
+        Swal.fire("Éxito", "Rol creado con éxito!", "success");
         setRoles([...roles, data]);
         resetFormulario();
       } else {
         const data = await response.json();
-        setError(data.message || "Error al crear el rol");
+        Swal.fire("Error", data.message || "Error al crear el rol", "error");
       }
     } catch {
-      setError("Error de red o servidor");
+      Swal.fire("Error", "Error de red o servidor", "error");
     }
   };
 
   const handleEliminar = async (id) => {
-    if (!window.confirm("¿Seguro que quieres eliminar este rol?")) return;
+    const result = await Swal.fire({
+      title: "¿Seguro que quieres eliminar este rol?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (!result.isConfirmed) return;
 
     try {
       const response = await fetch(`${API_BASE_URL}/roles/${id}`, {
@@ -107,14 +109,14 @@ export default function TablaRoles() {
       });
 
       if (response.ok) {
-        setMensaje("Rol eliminado con éxito!");
+        Swal.fire("Eliminado", "Rol eliminado con éxito!", "success");
         setRoles(roles.filter((rol) => rol.id !== id));
       } else {
         const data = await response.json();
-        setError(data.message || "Error al eliminar el rol");
+        Swal.fire("Error", data.message || "Error al eliminar el rol", "error");
       }
     } catch {
-      setError("Error de red o servidor");
+      Swal.fire("Error", "Error de red o servidor", "error");
     }
   };
 
@@ -153,9 +155,6 @@ export default function TablaRoles() {
         )}
 
         {loading && <p>Cargando roles...</p>}
-
-        {mensaje && <p className="mensaje">{mensaje}</p>}
-        {error && <p className="error">{error}</p>}
 
         <div className="habitaciones-lista">
           <h3>Roles creados:</h3>

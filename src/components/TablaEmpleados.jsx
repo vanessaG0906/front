@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 const API_USUARIOS = "http://localhost:8000/api/usuarios";
 const API_ROLES = "http://localhost:8000/api/roles";
 
-export default function TablaHoteles() {
+export default function TablaEmpleados() {
   const [empleados, setEmpleados] = useState([]);
   const [roles, setRoles] = useState([]);
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [rolId, setRolId] = useState("");
-  const [mensaje, setMensaje] = useState("");
   const [editandoId, setEditandoId] = useState(null);
 
-  // Carga inicial: empleados y roles
   useEffect(() => {
     cargarRoles();
     cargarEmpleados();
@@ -29,10 +28,10 @@ export default function TablaHoteles() {
         setRoles(data);
         if (!rolId && data.length > 0) setRolId(String(data[0].id));
       } else {
-        setMensaje("Error al cargar roles");
+        Swal.fire("Error", "Error al cargar roles", "error");
       }
     } catch (e) {
-      setMensaje("Error de red cargando roles");
+      Swal.fire("Error", "Error de red cargando roles", "error");
     }
   }
 
@@ -43,12 +42,13 @@ export default function TablaHoteles() {
       });
       if (res.ok) {
         const data = await res.json();
+        console.log("Empleados recibidos:", data);
         setEmpleados(data);
       } else {
-        setMensaje("Error al cargar empleados");
+        Swal.fire("Error", "Error al cargar empleados", "error");
       }
     } catch (e) {
-      setMensaje("Error de red cargando empleados");
+      Swal.fire("Error", "Error de red cargando empleados", "error");
     }
   }
 
@@ -59,12 +59,47 @@ export default function TablaHoteles() {
     if (roles.length > 0) setRolId(String(roles[0].id));
     else setRolId("");
     setEditandoId(null);
-    setMensaje("");
+  };
+
+  const validarFormulario = () => {
+    if (nombre.trim().length < 3) {
+      Swal.fire("Atención", "El nombre debe tener al menos 3 caracteres.", "warning");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(correo.trim())) {
+      Swal.fire("Atención", "Ingrese un correo electrónico válido.", "warning");
+      return false;
+    }
+
+    if (!editandoId) {
+      const emailExistente = empleados.some(
+        (emp) => emp.correo.toLowerCase() === correo.trim().toLowerCase()
+      );
+      if (emailExistente) {
+        Swal.fire("Atención", "El correo ya está registrado.", "warning");
+        return false;
+      }
+    }
+
+    if (!editandoId && password.trim().length < 6) {
+      Swal.fire("Atención", "La contraseña debe tener al menos 6 caracteres.", "warning");
+      return false;
+    }
+
+    if (!rolId) {
+      Swal.fire("Atención", "Debe seleccionar un rol.", "warning");
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMensaje("");
+
+    if (!validarFormulario()) return;
 
     const url = editandoId ? `${API_USUARIOS}/${editandoId}` : API_USUARIOS;
     const method = editandoId ? "PUT" : "POST";
@@ -77,23 +112,28 @@ export default function TablaHoteles() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
-          nombre,
-          correo,
+          nombre: nombre.trim(),
+          correo: correo.trim(),
           ...(password ? { password } : {}),
           rol_id: rolId,
         }),
       });
 
       if (res.ok) {
-        setMensaje(editandoId ? "Empleado actualizado." : "Empleado registrado.");
+        Swal.fire({
+          icon: "success",
+          title: editandoId ? "Empleado actualizado" : "Empleado registrado",
+          timer: 1800,
+          showConfirmButton: false,
+        });
         resetFormulario();
         cargarEmpleados();
       } else {
         const data = await res.json().catch(() => ({}));
-        setMensaje(data.message || "Error guardando empleado");
+        Swal.fire("Error", data.message || "Error guardando empleado", "error");
       }
     } catch (e) {
-      setMensaje("Error de red al guardar empleado");
+      Swal.fire("Error", "Error de red al guardar empleado", "error");
     }
   };
 
@@ -103,11 +143,17 @@ export default function TablaHoteles() {
     setRolId(String(emp.rol_id));
     setEditandoId(emp.id);
     setPassword("");
-    setMensaje("");
   };
 
   const handleEliminar = async (id) => {
-    if (!window.confirm("¿Seguro que quieres eliminar este empleado?")) return;
+    const confirm = await Swal.fire({
+      title: "¿Seguro que quieres eliminar este empleado?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (!confirm.isConfirmed) return;
 
     try {
       const res = await fetch(`${API_USUARIOS}/${id}`, {
@@ -116,26 +162,44 @@ export default function TablaHoteles() {
       });
 
       if (res.ok) {
-        setMensaje("Empleado eliminado.");
+        Swal.fire("Eliminado", "Empleado eliminado.", "success");
         cargarEmpleados();
       } else {
-        setMensaje("Error eliminando empleado.");
+        Swal.fire("Error", "Error eliminando empleado.", "error");
       }
     } catch {
-      setMensaje("Error de red al eliminar empleado.");
+      Swal.fire("Error", "Error de red al eliminar empleado.", "error");
     }
   };
 
+  // Función para obtener nombre de rol por id
+  const obtenerNombreRol = (id) => {
+    const rol = roles.find((r) => String(r.id) === String(id));
+    return rol ? rol.nombre : id;
+  };
+
   return (
-    <div className="hotel-panel" style={{ maxWidth: 700, margin: "2rem auto", padding: "1.5rem", fontFamily: "Arial, sans-serif" }}>
+    <div
+      className="hotel-panel"
+      style={{ maxWidth: 700, margin: "2rem auto", padding: "1.5rem", fontFamily: "Arial, sans-serif" }}
+    >
       <h2>{editandoId ? "Editar Empleado" : "Registrar Empleado"}</h2>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "2rem" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "2rem" }}
+      >
         <label>Nombre:</label>
         <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} required />
 
         <label>Correo:</label>
-        <input type="email" value={correo} onChange={e => setCorreo(e.target.value)} required disabled={!!editandoId} />
+        <input
+          type="email"
+          value={correo}
+          onChange={e => setCorreo(e.target.value)}
+          required
+          disabled={!!editandoId}
+        />
 
         <label>
           Contraseña: {editandoId && <small>(dejar vacío para no cambiar)</small>}
@@ -152,7 +216,7 @@ export default function TablaHoteles() {
           <option value="" disabled>
             -- Selecciona un rol --
           </option>
-          {roles.map(rol => (
+          {roles.map((rol) => (
             <option key={rol.id} value={rol.id}>
               {rol.nombre}
             </option>
@@ -160,7 +224,17 @@ export default function TablaHoteles() {
         </select>
 
         <div style={{ marginTop: 10 }}>
-          <button type="submit" style={{ padding: "8px 16px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: 6, cursor: "pointer" }}>
+          <button
+            type="submit"
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: 6,
+              cursor: "pointer",
+            }}
+          >
             {editandoId ? "Actualizar" : "Registrar"}
           </button>
 
@@ -174,12 +248,6 @@ export default function TablaHoteles() {
             </button>
           )}
         </div>
-
-        {mensaje && (
-          <p style={{ marginTop: 10, fontWeight: "bold", color: mensaje.toLowerCase().includes("error") ? "red" : "green" }}>
-            {mensaje}
-          </p>
-        )}
       </form>
 
       <h2>Empleados registrados</h2>
@@ -196,11 +264,11 @@ export default function TablaHoteles() {
             </tr>
           </thead>
           <tbody>
-            {empleados.map(emp => (
+            {empleados.map((emp) => (
               <tr key={emp.id} style={{ borderBottom: "1px solid #ddd" }}>
                 <td style={{ padding: 8 }}>{emp.nombre}</td>
                 <td style={{ padding: 8 }}>{emp.correo}</td>
-                <td style={{ padding: 8 }}>{emp.rol_nombre || emp.rol_id}</td>
+                <td style={{ padding: 8 }}>{obtenerNombreRol(emp.rol_id)}</td>
                 <td style={{ padding: 8 }}>
                   <button
                     onClick={() => handleEditar(emp)}

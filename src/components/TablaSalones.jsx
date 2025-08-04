@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import "./TablaSalones.css";
 
 const API_BASE_URL = "http://localhost:8000/api";
@@ -7,8 +8,6 @@ export default function TablaSalones() {
   const [showForm, setShowForm] = useState(false);
   const [salones, setSalones] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [mensaje, setMensaje] = useState("");
-  const [error, setError] = useState("");
 
   // Para crear o editar:
   const [editandoId, setEditandoId] = useState(null);
@@ -26,7 +25,6 @@ export default function TablaSalones() {
 
   const fetchSalones = async () => {
     setLoading(true);
-    setError("");
     try {
       const response = await fetch(`${API_BASE_URL}/salones`, {
         headers: {
@@ -38,10 +36,18 @@ export default function TablaSalones() {
         const data = await response.json();
         setSalones(data);
       } else {
-        setError("Error al cargar salones");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error al cargar salones",
+        });
       }
     } catch {
-      setError("Error de red o servidor");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error de red o servidor",
+      });
     }
     setLoading(false);
   };
@@ -53,28 +59,32 @@ export default function TablaSalones() {
     setPrecioAlquiler("");
     setEditandoId(null);
     setShowForm(false);
-    setError("");
-    setMensaje("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMensaje("");
-    setError("");
 
     if (!nombre.trim() || !capacidad || !estado.trim() || !precioAlquiler) {
-      setError("Todos los campos son obligatorios.");
-      return;
+      return Swal.fire({
+        icon: "warning",
+        title: "Atención",
+        text: "Todos los campos son obligatorios.",
+      });
     }
 
-    // Validar capacidad y precio que sean números positivos
     if (isNaN(capacidad) || capacidad <= 0) {
-      setError("Capacidad debe ser un número positivo.");
-      return;
+      return Swal.fire({
+        icon: "warning",
+        title: "Atención",
+        text: "Capacidad debe ser un número positivo.",
+      });
     }
     if (isNaN(precioAlquiler) || precioAlquiler <= 0) {
-      setError("Precio alquiler debe ser un número positivo.");
-      return;
+      return Swal.fire({
+        icon: "warning",
+        title: "Atención",
+        text: "Precio alquiler debe ser un número positivo.",
+      });
     }
 
     const url = editandoId ? `${API_BASE_URL}/salones/${editandoId}` : `${API_BASE_URL}/salones`;
@@ -98,7 +108,13 @@ export default function TablaSalones() {
 
       if (response.ok) {
         const data = await response.json();
-        setMensaje(editandoId ? "Salón actualizado con éxito!" : "Salón creado con éxito!");
+        Swal.fire({
+          icon: "success",
+          title: "¡Éxito!",
+          text: editandoId ? "Salón actualizado con éxito!" : "Salón creado con éxito!",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         if (editandoId) {
           setSalones(salones.map((s) => (s.id === editandoId ? data : s)));
         } else {
@@ -107,15 +123,33 @@ export default function TablaSalones() {
         resetFormulario();
       } else {
         const data = await response.json();
-        setError(data.message || "Error al guardar el salón");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: data.message || "Error al guardar el salón",
+        });
       }
     } catch {
-      setError("Error de red o servidor");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error de red o servidor",
+      });
     }
   };
 
   const handleEliminar = async (id) => {
-    if (!window.confirm("¿Seguro que quieres eliminar este salón?")) return;
+    const resultado = await Swal.fire({
+      title: "¿Seguro que quieres eliminar este salón?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (!resultado.isConfirmed) return;
 
     try {
       const response = await fetch(`${API_BASE_URL}/salones/${id}`, {
@@ -127,15 +161,29 @@ export default function TablaSalones() {
       });
 
       if (response.ok) {
-        setMensaje("Salón eliminado con éxito!");
+        Swal.fire({
+          icon: "success",
+          title: "Eliminado",
+          text: "Salón eliminado con éxito!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
         setSalones(salones.filter((s) => s.id !== id));
         if (editandoId === id) resetFormulario();
       } else {
         const data = await response.json();
-        setError(data.message || "Error al eliminar el salón");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: data.message || "Error al eliminar el salón",
+        });
       }
     } catch {
-      setError("Error de red o servidor");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error de red o servidor",
+      });
     }
   };
 
@@ -146,8 +194,6 @@ export default function TablaSalones() {
     setPrecioAlquiler(salon.precio_alquiler.toString());
     setEditandoId(salon.id);
     setShowForm(true);
-    setError("");
-    setMensaje("");
   };
 
   return (
@@ -210,9 +256,6 @@ export default function TablaSalones() {
       )}
 
       {loading && <p>Cargando salones...</p>}
-
-      {mensaje && <p className="mensaje">{mensaje}</p>}
-      {error && <p className="error">{error}</p>}
 
       <div className="salones-lista">
         <h3>Salones creados:</h3>

@@ -1,6 +1,15 @@
-/* Sidebar.css o TablaHabitaciones.css */
+/* Contenedor principal */
+.hotel-panel {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
 
-/* Estilos generales para el formulario */
+/* Formulario para crear/editar habitaciones */
 .create-habitacion-form {
   background-color: #f9f9f9;
   padding: 20px;
@@ -51,30 +60,14 @@
   background-color: #0056b3;
 }
 
+/* Mensajes */
 .mensaje {
   margin-top: 10px;
   color: green;
   font-weight: bold;
 }
 
-.habitaciones-lista {
-  margin-top: 20px;
-}
-
-.habitaciones-lista ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.habitaciones-lista li {
-  background-color: #ffffff;
-  border: 1px solid #e1e1e1;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  padding: 10px;
-}
-
-/* Botón de Crear Habitación / Cancelar */
+/* Botón para mostrar/ocultar formulario */
 .toggle-form-button {
   background-color: #28a745; /* verde */
   color: #fff;
@@ -95,35 +88,71 @@
 .toggle-form-button:active {
   transform: scale(0.98);
 }
+
+/* Tabla para habitaciones */
+.habitaciones-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.habitaciones-table th,
+.habitaciones-table td {
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.habitaciones-table th {
+  background-color: #f2f2f2;
+  font-weight: 700;
+}
+
+.habitaciones-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+/* Botones dentro de la tabla */
 .btn-editar {
-  margin-left: 10px;
   background-color: #4caf50;
   color: white;
   border: none;
   padding: 4px 8px;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 5px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-editar:hover {
+  background-color: #388e3c;
 }
 
 .btn-eliminar {
-  margin-left: 5px;
   background-color: #f44336;
   color: white;
   border: none;
   padding: 4px 8px;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
 }
 
-/* Contenedor opcional para separar y controlar layout */
+.btn-eliminar:hover {
+  background-color: #d32f2f;
+}
+
+/* Opcional: contenedor para estado (si usas select) */
 .estado-container {
   display: flex;
   flex-direction: column;
   margin-top: 12px;
-  max-width: 300px; /* ajusta según tu diseño */
+  max-width: 300px;
 }
 
-/* Estilo para la etiqueta */
 .estado-container label {
   font-weight: 600;
   color: #250101;
@@ -132,7 +161,6 @@
   user-select: none;
 }
 
-/* Estilo para el select */
 .estado-container select {
   padding: 10px 12px;
   border: 1.5px solid #ccc;
@@ -145,106 +173,12 @@
   outline: none;
 }
 
-/* Cambiar borde y sombra al enfocar */
 .estado-container select:focus {
   border-color: #007bff;
   box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
 }
 
-/* Opcional: cambiar cursor y color del option disabled */
 .estado-container select option[value=""] {
   color: #888;
   font-style: italic;
-}
-.hotel-panel {
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 1.5rem 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  font-family: Arial, sans-serif;
-}
-
-.empleado-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 2rem;
-}
-
-.empleado-form label {
-  flex-basis: 100%;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.empleado-form input,
-.empleado-form select {
-  flex: 1 1 100%;
-  padding: 8px 10px;
-  border: 1.5px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-}
-
-.empleado-form button {
-  padding: 10px 16px;
-  margin-top: 10px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.empleado-form button:hover {
-  background-color: #0056b3;
-}
-
-.mensaje {
-  width: 100%;
-  margin-top: 12px;
-  font-weight: 600;
-  color: green;
-}
-
-.empleados-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.empleados-table th,
-.empleados-table td {
-  border: 1px solid #ddd;
-  padding: 10px 12px;
-  text-align: left;
-}
-
-.empleados-table th {
-  background-color: #f2f2f2;
-  font-weight: 700;
-}
-
-.empleados-table tbody tr:hover {
-  background-color: #fafafa;
-}
-
-.empleados-table button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  padding: 6px 10px;
-  border-radius: 6px;
-  transition: background-color 0.2s;
-}
-
-.empleados-table button:hover {
-  background-color: #eee;
-}
-
-.empleados-table button:nth-child(2) {
-  color: red;
 }
