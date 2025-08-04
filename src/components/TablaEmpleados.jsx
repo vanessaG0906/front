@@ -126,6 +126,8 @@ export default function TablaEmpleados() {
           timer: 1800,
           showConfirmButton: false,
         });
+
+        
         resetFormulario();
         cargarEmpleados();
       } else {

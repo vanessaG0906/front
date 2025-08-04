@@ -25,6 +25,16 @@ export default function CrearReserva() {
 
   const navigate = useNavigate();
 
+  // Función para asegurar formato YYYY-MM-DD
+  const formatearFechaISO = (fecha) => {
+    if (!fecha) return null;
+    const d = new Date(fecha);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -61,7 +71,7 @@ export default function CrearReserva() {
     fetchData();
   }, []);
 
-  // Filtrado de clientes para mostrar solo los que coinciden con el filtro
+  // Filtrado de clientes
   const clientesFiltrados = clientes.filter((c) =>
     c.nombre.toLowerCase().includes(filtroCliente.toLowerCase())
   );
@@ -167,8 +177,8 @@ export default function CrearReserva() {
             cliente_id: clienteId,
             tipo_reserva: tipoReserva,
             id_objeto: idObjeto,
-            fecha_inicio: fechaInicio,
-            fecha_fin: fechaFin,
+            fecha_inicio: formatearFechaISO(fechaInicio),
+            fecha_fin: formatearFechaISO(fechaFin),
             estado: reservaEditando.estado,
           }),
         });
@@ -197,8 +207,8 @@ export default function CrearReserva() {
           cliente_id: clienteId,
           tipo_reserva: tipoReserva,
           id_objeto: idObjeto,
-          fecha_inicio: fechaInicio,
-          fecha_fin: fechaFin,
+          fecha_inicio: formatearFechaISO(fechaInicio),
+          fecha_fin: formatearFechaISO(fechaFin),
           estado: "pendiente",
         }),
       });
